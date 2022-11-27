@@ -26,18 +26,18 @@ const agendamento = new Schema({
         type: Date,
         required: true,
     },
-    comissao: {
-        type: Number,
-        required: true,
-    },
-    valor: {
-        type: Number,
-        required: true,
-    },
-    transactionId: {
-        type: String,
-        required: true,
-    },
+    // comissao: {
+    //     type: Number,
+    //     required: true,
+    // },
+    // valor: {
+    //     type: Number,
+    //     required: true,
+    // },
+    // transactionId: {
+    //     type: String,
+    //     required: true,
+    // },
     dataCadastro: {
         type: Date,
         default: Date.now ,

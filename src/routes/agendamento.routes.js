@@ -46,75 +46,74 @@ router.post('/', async(req, res) => {
             })
             //Caso não exista
         if (!existentAgendamento) {
+            // criando pagamento
+            // const precoFinal = util.toCents(servicos.preco) * 100
+            // const comissao = parseInt(precoFinal * (servicos.comissao / 100))
+            // const taxaSalao = precoFinal - keys.app_fee - comissao
+            // const taxaApp = keys.app_fee
 
-            //criando pagamento
-            const precoFinal = util.toCents(servicos.preco) * 100
-            const comissao = parseInt(precoFinal * (servicos.comissao / 100))
-            const taxaSalao = precoFinal - keys.app_fee - comissao
-            const taxaApp = keys.app_fee
+            // const pagamento = await pagarme('/transactions', {
+            //     //preço total
+            //     amount: precoFinal,
+            //     //Dados do Cartão
+            //     card_number: "4111 1111 1111 1111",
+            //     card_holder_name: "Morpheus Fishburne",
+            //     card_expiration_date: "1123",
+            //     card_cvv: "123",
+            //     postback_url: "http://requestb.in/pkt7pgpk",
+            //     //dados Cliente
+            //     customer: {
+            //         id: clientes.pagadorId
+            //     },
+            //     // Dados endereço do cliente
+            //     billing: {
+            //         name: clientes.nome,
+            //         address: {
+            //             country: clientes.endereco.pais,
+            //             state: clientes.endereco.estado,
+            //             city: clientes.endereco.cidade,
+            //             neighborhood: clientes.endereco.bairro,
+            //             street: clientes.endereco.rua,
+            //             street_number: clientes.endereco.numero,
+            //             zipcode: clientes.endereco.cep
+            //         }
+            //     },
+            //     //Servicos
+            //     items: [{
+            //         id: servicoId,
+            //         title: servicos.titulo,
+            //         unit_price: precoFinal,
+            //         quantity: 1,
+            //         tangible: false
+            //     }],
+            //     split_rules: [
+            //         //Taxa do Salão
+            //         {
+            //             recipient_id: saloes.recipientId,
+            //             amount: taxaSalao
+            //         },
+            //         //Taxa do Colaborador
+            //         {
+            //             recipient_id: colaboradores.recipientId,
+            //             amount: comissao
+            //         },
+            //         //Taxa do app
+            //         {
+            //             recipient_id: keys.recipientId,
+            //             amount: taxaApp
+            //         }
+            //     ]
+            // })
 
-            const pagamento = await pagarme('/transactions', {
-                //preço total
-                amount: precoFinal,
-                //Dados do Cartão
-                card_number: "4111 1111 1111 1111",
-                card_holder_name: "Morpheus Fishburne",
-                card_expiration_date: "1123",
-                card_cvv: "123",
-                postback_url: "http://requestb.in/pkt7pgpk",
-                //dados Cliente
-                customer: {
-                    id: clientes.pagadorId
-                },
-                // Dados endereço do cliente
-                billing: {
-                    name: clientes.nome,
-                    address: {
-                        country: clientes.endereco.pais,
-                        state: clientes.endereco.estado,
-                        city: clientes.endereco.cidade,
-                        neighborhood: clientes.endereco.bairro,
-                        street: clientes.endereco.rua,
-                        street_number: clientes.endereco.numero,
-                        zipcode: clientes.endereco.cep
-                    }
-                },
-                //Servicos
-                items: [{
-                    id: servicoId,
-                    title: servicos.titulo,
-                    unit_price: precoFinal,
-                    quantity: 1,
-                    tangible: false
-                }],
-                split_rules: [
-                    //Taxa do Salão
-                    {
-                        recipient_id: saloes.recipientId,
-                        amount: taxaSalao
-                    },
-                    //Taxa do Colaborador
-                    {
-                        recipient_id: colaboradores.recipientId,
-                        amount: comissao
-                    },
-                    //Taxa do app
-                    {
-                        recipient_id: keys.recipientId,
-                        amount: taxaApp
-                    }
-                ]
-            })
-
-            if (pagamento.error) {
-                throw pagamento
-            }
+            // if (pagamento.error) {
+            //     throw pagamento
+            // }
             //criar Agendamento
             agendamento = await new Agendamento({
                 ...req.body,
-                transactionId: pagamento.data.id,
-                comissao: servicos.comissao,
-                valor: servicos.preco * 100
+                // transactionId: pagamento.data.id,
+                // comissao: servicos.comissao,
+                // valor: servicos.preco * 100
             }).save({ session })
         }
         await session.commitTransaction()
@@ -125,6 +124,7 @@ router.post('/', async(req, res) => {
             res.json({ message: 'Agendamento cadastrado com Sucesso', agendamento })
         }
     } catch (err) {
+        console.log('Entrei');
         await session.abortTransaction()
         session.endSession()
         res.json({ error: true, message: err.message })
