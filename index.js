@@ -13,7 +13,7 @@ app.use(express.urlencoded({
 app.use(busboy());
 
 //variaveis
-app.set('port', 8000);
+app.set('port', process.env.PORT || 8000);
 
 //rotas
 app.use('/salao', require('./src/routes/salao.routes'));
